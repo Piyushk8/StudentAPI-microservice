@@ -1,4 +1,4 @@
-module restapi
+module github.com/piyushk8/StudentAPI
 
 go 1.24.3
 

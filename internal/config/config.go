@@ -2,6 +2,7 @@ package config
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -9,12 +10,12 @@ import (
 )
 
 type HTTPServer struct {
-	Addr string
+	Addr string `yaml:"address"`
 }
 
 type Config struct {
 	Env         string `yaml:"env" env:"ENV" env-required:"true" env-default:"productions"`
-	StoragePAth string `yaml:"storage_path" env-required:"true"`
+	StoragePath string `yaml:"storage_path" env-required:"true"`
 	HTTPServer  `yaml:"http_server"`
 }
 
@@ -29,7 +30,7 @@ func MUSTLoad() *Config {
 		configPath = *flags
 
 		if configPath == "" {
-			log.Fatal((" no config path provided"))
+			log.Fatal(" no config path provided")
 		}
 	}
 
@@ -38,12 +39,11 @@ func MUSTLoad() *Config {
 	}
 
 	var cfg Config
-
 	err := cleanenv.ReadConfig(configPath, &cfg)
-
 	if err != nil {
-		log.Fatal("cannot read confgi file", err.Error())
+		log.Fatal("cannot read config file", err.Error())
 	}
+	fmt.Println("Loaded config:", cfg)
 
 	return &cfg
 }
