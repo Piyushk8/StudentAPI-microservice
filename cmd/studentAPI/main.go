@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/piyushk8/StudentAPI/internal/Storage/sqlite"
 	"github.com/piyushk8/StudentAPI/internal/config"
 	student "github.com/piyushk8/StudentAPI/internal/http/handlers"
 )
@@ -29,10 +30,17 @@ func main() {
 	// test()
 	// // loaidng configs
 	cfg := config.MUSTLoad()
+	storage, err := sqlite.New(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	slog.Info("storage initialized", slog.String("env", cfg.Env), slog.String("version", "1.0.0"))
+
+
 
 	router := http.NewServeMux()
 
-	router.HandleFunc("GET /api/student", student.New())
+	router.HandleFunc("GET /api/student", student.New(storage))
 
 	server := http.Server{
 		Addr:    cfg.Addr,
